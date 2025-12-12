@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface KosCardProps {
+  id: string;
   image: string;
   rating: number;
   title: string;
@@ -16,10 +18,12 @@ interface KosCardProps {
   discountPercent: number;
   promoType: string;
   promoDetails: string;
+  isLoading?: boolean;
   className?: string;
 }
 
 export function KosCard({
+  id,
   image,
   rating,
   title,
@@ -31,6 +35,7 @@ export function KosCard({
   discountPercent,
   promoType,
   promoDetails,
+  isLoading = false,
   className,
 }: KosCardProps) {
   const formatPrice = (price: number) => {
@@ -43,18 +48,22 @@ export function KosCard({
   };
 
   return (
-    <div
-      className={cn(
-        'flex-shrink-0 w-[300px] bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer',
-        className
-      )}
-    >
+    <Link href={`/kos/${id}`}>
+      <div
+        className={cn(
+          'flex-shrink-0 w-[300px] bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer',
+          className
+        )}
+      >
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
           src={image}
           alt={title}
           fill
-          className="object-cover"
+          className={cn(
+            'object-cover transition-all duration-300',
+            isLoading && 'blur-sm'
+          )}
         />
         <div className="absolute top-3 left-3 flex items-center gap-1 bg-white px-2.5 py-1 rounded-full shadow-sm">
           <svg className="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 24 24">
@@ -65,18 +74,32 @@ export function KosCard({
       </div>
 
       <div className="p-4 space-y-2">
-        <h3 className="font-semibold text-gray-900 text-base line-clamp-1">
+        <h3 className={cn(
+          'font-semibold text-gray-900 text-base line-clamp-1 transition-all duration-300',
+          isLoading && 'blur-sm'
+        )}>
           {title}
         </h3>
 
-        <p className="text-sm text-gray-600 line-clamp-1">{location}</p>
+        <p className={cn(
+          'text-sm text-gray-600 line-clamp-1 transition-all duration-300',
+          isLoading && 'blur-sm'
+        )}>
+          {location}
+        </p>
 
-        <p className="text-xs text-gray-500">
+        <p className={cn(
+          'text-xs text-gray-500 transition-all duration-300',
+          isLoading && 'blur-sm'
+        )}>
           {district} • {amenities}
         </p>
 
         <div className="pt-2">
-          <div className="flex items-baseline gap-2 mb-1">
+          <div className={cn(
+            'flex items-baseline gap-2 mb-1 transition-all duration-300',
+            isLoading && 'blur-sm'
+          )}>
             <span className="text-lg font-bold text-red-600">
               {formatPrice(discountedPrice)}
             </span>
@@ -84,11 +107,15 @@ export function KosCard({
               {formatPrice(originalPrice)}
             </span>
           </div>
-          <p className="text-xs text-gray-600">
+          <p className={cn(
+            'text-xs text-gray-600 transition-all duration-300',
+            isLoading && 'blur-sm'
+          )}>
             Diskon {discountPercent}% ({promoType}) • {promoDetails}
           </p>
         </div>
       </div>
     </div>
+    </Link>
   );
 }

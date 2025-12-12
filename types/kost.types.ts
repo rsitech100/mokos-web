@@ -5,11 +5,14 @@ export interface Kost {
   description: string;
   address: string;
   city: string;
+  district?: string;
   province: string;
   postalCode: string;
   latitude: number;
   longitude: number;
+  gender?: string[];
   amenities: string[];
+  phoneNumber?: string;
   rules: string;
   images: string[];
   isActive: boolean;
