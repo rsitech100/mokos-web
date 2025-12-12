@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Container } from '@/components';
-import { KosDetailGallery } from '@/components/public/KosDetailGallery';
-import { KosDetailInfo } from '@/components/public/KosDetailInfo';
-import { KosDetailTabs } from '@/components/public/KosDetailTabs';
+import { KosDetailGallery } from '@/components/public/detail/KosDetailGallery';
+import { KosDetailInfo } from '@/components/public/detail/KosDetailInfo';
+import { KosDetailTabs } from '@/components/public/detail/KosDetailTabs';
 import { RecommendationsList } from '@/components/lists/RecommendationsList';
 import { Kost } from '@/types/kost.types';
 import { cn } from '@/lib/utils';
