@@ -1,19 +1,17 @@
-'use client';
-
-import React from 'react';
 import { Container } from '@/components/layout/Container';
-import { Button } from '@/components/ui/Button';
+import { SearchButton } from '@/components/button/SearchButton';
+import { FacilityButton } from '@/components/button/FacilityButton';
 import Image from 'next/image';
 
 export function Hero() {
   const facilities = [
-    { icon: '🚇', label: 'Dekat MRT', emoji: '🚇' },
-    { icon: '🚆', label: 'Dekat KRL', emoji: '🚆' },
-    { icon: '🐕', label: 'Pet Friendly', emoji: '🐕' },
-    { icon: '👥', label: 'Pasuin', emoji: '👥' },
-    { icon: '🏢', label: 'Bangunan Baru', emoji: '🏢' },
-    { icon: '🏕️', label: 'Kos Campur', emoji: '🏕️' },
-    { icon: '♿', label: 'Ramah Disabilitas', emoji: '♿' },
+    { label: 'Dekat MRT', icon: '/images/mrt-logo.png' },
+    { label: 'Dekat KRL', icon: '/images/kai-logo.png' },
+    { label: 'Pet Friendly', emoji: '🐕' },
+    { label: 'Pasutri', emoji: '👫' },
+    { label: 'Bangunan Baru', emoji: '🏠' },
+    { label: 'Kos Campur', emoji: '👥' },
+    { label: 'Ramah Disabilitas', emoji: '♿' },
   ];
 
   return (
@@ -33,44 +31,27 @@ export function Hero() {
               </span>
             </div>
 
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+            <h1 className="text-4xl lg:text-5xl xl:text-5xl font-bold text-gray-900 leading-tight">
               Pilihan Kos Terlengkap untuk Setiap Kebutuhan
             </h1>
 
-            <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
-              Jelajahi kos dan properti terbaik di banyak lokasi. Proses cepat,
-              pilihan lengkap, dan pengalaman pencarian yang lebih praktis.
+            <p className="text-base font-light lg:text-xl text-gray-600 leading-relaxed">
+              Jelajahi kos dan properti terbaik di banyak lokasi. Proses<br/>
+              cepat, pilihan lengkap, dan pengalaman pencarian yang<br/>lebih praktis.
             </p>
 
-            <div className="mt-6">
-              <div className="flex items-center w-full max-w-2xl bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <label className="sr-only">Cari lokasi</label>
-                <input
-                  type="text"
-                  placeholder="Masukkan nama lokasi / area / alamat"
-                  className="flex-1 px-6 py-3.5 text-sm text-gray-700 placeholder:text-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"
-                />
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="rounded-xl m-1 px-10 shadow-none"
-                >
-                  Cari
-                </Button>
-              </div>
-            </div>
+            <SearchButton className="mt-6" />
 
             <div className="mt-8">
               <p className="text-md font-medium text-gray-700 mb-3">Fasilitas</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 gap-2 w-fit">
                 {facilities.map((facility, index) => (
-                  <button
+                  <FacilityButton
                     key={index}
-                    className="inline-flex items-center gap-1.5 px-2 py-2 bg-white border border-gray-200 rounded-full text-xs text-gray-700 hover:border-primary hover:bg-blue-50 transition-all shadow-sm"
-                  >
-                    <span>{facility.emoji}</span>
-                    <span>{facility.label}</span>
-                  </button>
+                    label={facility.label}
+                    icon={facility.icon}
+                    emoji={facility.emoji}
+                  />
                 ))}
               </div>
             </div>

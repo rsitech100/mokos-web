@@ -3,6 +3,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
 
 interface CarouselProps {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ interface CarouselProps {
   title?: string;
   actionLabel?: string;
   onActionClick?: () => void;
+  actionHref?: string;
   className?: string;
 }
 
@@ -19,6 +21,7 @@ export function Carousel({
   title,
   actionLabel,
   onActionClick,
+  actionHref,
   className,
 }: CarouselProps) {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
@@ -47,14 +50,25 @@ export function Carousel({
           </h2>
           
           <div className="flex items-center gap-3">
-            {actionLabel && onActionClick && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onActionClick}
-              >
-                {actionLabel}
-              </Button>
+            {actionLabel && (actionHref || onActionClick) && (
+              actionHref ? (
+                <Link href={actionHref}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                  >
+                    {actionLabel}
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onActionClick}
+                >
+                  {actionLabel}
+                </Button>
+              )
             )}
             
             {variant === 'top-arrow' && (

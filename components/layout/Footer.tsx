@@ -1,6 +1,3 @@
-'use client';
-
-import React from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 
@@ -38,50 +35,56 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-white border-t border-gray-100">
+    <footer className="bg-white border-t border-gray-200">
       <Container>
-        <div className="py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
-            <div className="lg:col-span-1">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 bg-[rgb(var(--primary))] rounded flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
-                  </svg>
-                </div>
-                <span className="text-lg font-bold text-gray-900">Mokos</span>
+        <div className="py-12 md:py-16">
+          <div className="flex flex-col lg:flex-row gap-12">
+            <div className="lg:w-auto lg:shrink-0">
+              <div className="flex items-center gap-2 mb-4">
+                <svg
+                  className="h-8 w-8 text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor" />
+                  <rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" />
+                  <rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" />
+                  <rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor" />
+                </svg>
+                <span className="text-xl font-bold text-gray-900">Mokos</span>
               </div>
-              <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+              <p className="text-gray-600 text-sm mb-6 leading-relaxed whitespace-nowrap">
                 Mulai dari survei, sampai pindah, semua lebih simpel.
               </p>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-row gap-3">
                 <Link
                   href="#"
-                  className="inline-flex items-center gap-2.5 text-gray-700 hover:text-gray-900 transition-colors"
+                  className="inline-flex items-center gap-2 text-gray-900 hover:text-primary transition-colors w-fit"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                   </svg>
-                  <span className="text-sm font-medium">App store</span>
+                  <span className="text-sm font-normal">App store</span>
                 </Link>
 
                 <Link
                   href="#"
-                  className="inline-flex items-center gap-2.5 text-gray-700 hover:text-gray-900 transition-colors"
+                  className="inline-flex items-center gap-2 text-gray-900 hover:text-primary transition-colors w-fit"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm10.84-.85l-4.58-4.58L19.11 5.5c.45.26.74.76.74 1.31v10.38c0 .55-.29 1.05-.74 1.31l-5.27 3.15zm6.27-8.4l-2.42 1.44-2.37-2.37 2.37-2.37 2.42 1.44c.5.29.81.84.81 1.43s-.31 1.14-.81 1.43z"/>
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
                   </svg>
-                  <span className="text-sm font-medium">Google play</span>
+                  <span className="text-sm font-normal">Google play</span>
                 </Link>
               </div>
             </div>
 
-            <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-8">
               {footerSections.map((section, index) => (
                 <div key={index}>
-                  <h3 className="text-xs font-bold text-gray-500 mb-4 uppercase tracking-wider">
+                  <h3 className="text-xs font-semibold text-gray-500 mb-4 uppercase tracking-wide">
                     {section.title}
                   </h3>
                   <ul className="space-y-3">
@@ -89,7 +92,7 @@ export function Footer() {
                       <li key={linkIndex}>
                         <Link
                           href={link.href}
-                          className="inline-flex items-center gap-2 text-gray-900 hover:text-[rgb(var(--primary))] transition-colors text-sm"
+                          className="inline-flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors text-sm"
                         >
                           {'icon' in link && link.icon === 'email' && (
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -111,8 +114,8 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="mt-12 pt-6 border-t border-gray-100">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="mt-12 pt-6 border-t border-gray-200">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-wrap gap-6">
                 <Link href="/terms" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
                   Terms of Service

@@ -50,6 +50,14 @@ export function RecommendationsList() {
     fetchKosts();
   }, []);
 
+  const getGenderLabel = (gender?: string[]) => {
+    if (!gender || gender.length === 0) return undefined;
+    if (gender.includes('female') && gender.includes('male')) return 'Campur';
+    if (gender.includes('female')) return 'Putri';
+    if (gender.includes('male')) return 'Putra';
+    return undefined;
+  };
+
   const transformedKosts = useMemo(() => 
     kosts.map((kost) => ({
       id: kost.id,
@@ -57,13 +65,14 @@ export function RecommendationsList() {
       rating: 4.5,
       title: kost.name,
       location: `${kost.city}, ${kost.province}`,
-      district: kost.address,
-      amenities: kost.amenities?.slice(0, 2).join(' • ') || 'Fasilitas Lengkap',
+      district: `${kost.district || kost.address}`,
+      amenities: kost.amenities?.slice(0, 3).join(' • ') || 'Fasilitas Lengkap',
+      gender: getGenderLabel(kost.gender),
       originalPrice: 2750000,
       discountedPrice: 2500000,
       discountPercent: 10,
       promoType: 'Bulan Pertama',
-      promoDetails: 'Tersedia',
+      promoDetails: 'Sisa 2 Kamar',
     }))
   , [kosts]);
 

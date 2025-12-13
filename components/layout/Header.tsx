@@ -1,17 +1,30 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Container } from './Container';
 import { Button } from '@/components/ui/Button';
 
 export function Header() {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/' || pathname === '';
+
   const navItems = [
     { label: 'Area Kos Populer', href: '#popular' },
     { label: 'Rekomendasi Kos', href: '#recommendations' },
     { label: 'Pusat Bantuan', href: '#help' },
     { label: 'Syarat dan Ketentuan', href: '#terms' },
   ];
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (isHomePage && href.startsWith('#')) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
 
   return (
     <header className="sticky top-4 z-50 w-full pointer-events-none">
@@ -39,7 +52,8 @@ export function Header() {
             {navItems.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={isHomePage ? item.href : `/${item.href}`}
+                onClick={(e) => handleNavClick(e, item.href)}
                 className="text-sm font-normal text-gray-700 hover:text-primary transition-colors"
               >
                 {item.label}

@@ -1,6 +1,3 @@
-'use client';
-
-import React from 'react';
 import Image from 'next/image';
 import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/Button';
@@ -118,7 +115,6 @@ export function Network() {
             <Button
               variant="outline"
               size="md"
-              onClick={() => console.log('Explore map')}
               className="group"
             >
               Jelajahi Kos Dari Maps

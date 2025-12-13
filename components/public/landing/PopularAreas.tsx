@@ -1,9 +1,7 @@
-'use client';
-
-import React from 'react';
 import { Container } from '@/components/layout/Container';
 import { Carousel } from '@/components/ui/Carousel';
 import { PopularAreaCard } from '@/components/cards/PopularAreaCard';
+import Link from 'next/link';
 
 export function PopularAreas() {
   const popularAreas = [
@@ -45,21 +43,25 @@ export function PopularAreas() {
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-gray-50 overflow-hidden">
+    <section id="popular" className="py-12 md:py-16 bg-gray-50 overflow-hidden scroll-mt-24">
       <Container>
         <Carousel
           variant="slider"
           title="Area Kos Paling Populer"
           actionLabel="Lihat Semua"
-          onActionClick={() => console.log('View all areas')}
+          actionHref="/kos"
         >
           {popularAreas.map((area) => (
-            <PopularAreaCard
-              key={area.id}
-              name={area.name}
-              image={area.image}
-              onClick={() => console.log(`Clicked ${area.name}`)}
-            />
+            <Link 
+              key={area.id} 
+              href={`/kos?city=${encodeURIComponent(area.name)}`}
+              className="block"
+            >
+              <PopularAreaCard
+                name={area.name}
+                image={area.image}
+              />
+            </Link>
           ))}
         </Carousel>
       </Container>
