@@ -18,7 +18,7 @@ export function KosDetailGallery({ images, title, location }: KosDetailGalleryPr
       {displayImages.length === 1 ? (
         <button
           onClick={() => setSelectedImage(0)}
-          className="relative aspect-[4/3] rounded-2xl overflow-hidden w-full"
+          className="relative aspect-[16/9] rounded-2xl overflow-hidden max-h-[450px] w-full"
         >
           <Image
             src={displayImages[0]}
@@ -29,10 +29,10 @@ export function KosDetailGallery({ images, title, location }: KosDetailGalleryPr
           />
         </button>
       ) : (
-        <div className="grid grid-cols-[2fr_1fr] gap-4">
+        <div className="grid grid-cols-[1.5fr_1fr] gap-3 h-[500px]">
           <button
             onClick={() => setSelectedImage(0)}
-            className={`relative aspect-[4/3] rounded-2xl overflow-hidden transition-all ${
+            className={`relative h-full rounded-2xl overflow-hidden transition-all ${
               selectedImage === 0
                 ? 'ring-4 ring-primary'
                 : 'hover:opacity-90'
@@ -47,8 +47,8 @@ export function KosDetailGallery({ images, title, location }: KosDetailGalleryPr
             />
           </button>
 
-          <div className="grid grid-cols-1 grid-rows-4 gap-4">
-            {displayImages.slice(1).map((image, index) => (
+          <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
+            {displayImages.slice(1, 5).map((image, index) => (
               <button
                 key={index + 1}
                 onClick={() => setSelectedImage(index + 1)}
