@@ -18,4 +18,4 @@ export { Network } from './public/landing/Network';
 export { WhyChoose } from './public/landing/WhyChoose';
 export { KosDetailGallery } from './public/detail/KosDetailGallery';
 export { KosDetailInfo } from './public/detail/KosDetailInfo';
-export { KosDetailTabs } from './public/detail/KosDetailTabs';
+export { KosDetailTabs } from './tabs/KosDetailTabs';

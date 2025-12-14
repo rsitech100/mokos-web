@@ -5,54 +5,81 @@ import Image from 'next/image';
 
 interface KosDetailGalleryProps {
   images: string[];
+  title?: string;
+  location?: string;
 }
 
-export function KosDetailGallery({ images }: KosDetailGalleryProps) {
+export function KosDetailGallery({ images, title, location }: KosDetailGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(0);
+  const displayImages = images.slice(0, 5);
 
   return (
     <div className="space-y-4">
-      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-        <Image
-          src={images[selectedImage]}
-          alt={`Gallery image ${selectedImage + 1}`}
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-
-      {/* Thumbnail Grid */}
-      <div className="grid grid-cols-4 gap-3">
-        {images.slice(0, 5).map((image, index) => (
+      {displayImages.length === 1 ? (
+        <button
+          onClick={() => setSelectedImage(0)}
+          className="relative aspect-[4/3] rounded-2xl overflow-hidden w-full"
+        >
+          <Image
+            src={displayImages[0]}
+            alt="Gallery image 1"
+            fill
+            className="object-cover"
+            priority
+          />
+        </button>
+      ) : (
+        <div className="grid grid-cols-[2fr_1fr] gap-4">
           <button
-            key={index}
-            onClick={() => setSelectedImage(index)}
-            className={`relative aspect-[4/3] rounded-xl overflow-hidden transition-all ${
-              selectedImage === index
-                ? 'ring-2 ring-[rgb(var(--primary))] scale-105'
-                : 'hover:scale-105 opacity-70 hover:opacity-100'
+            onClick={() => setSelectedImage(0)}
+            className={`relative aspect-[4/3] rounded-2xl overflow-hidden transition-all ${
+              selectedImage === 0
+                ? 'ring-4 ring-primary'
+                : 'hover:opacity-90'
             }`}
           >
             <Image
-              src={image}
-              alt={`Thumbnail ${index + 1}`}
+              src={displayImages[0]}
+              alt="Gallery image 1"
               fill
               className="object-cover"
+              priority
             />
           </button>
-        ))}
-      </div>
 
-      <div className="relative aspect-[2/1] rounded-2xl overflow-hidden bg-gray-100">
-        <Image
-          src="/images/map.png"
-          alt="Location map"
-          fill
-          className="object-cover"
-        />
-        <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-500 rounded-full -translate-x-1/2 -translate-y-1/2" />
-      </div>
+          <div className="grid grid-cols-1 grid-rows-4 gap-4">
+            {displayImages.slice(1).map((image, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setSelectedImage(index + 1)}
+                className={`relative rounded-2xl overflow-hidden transition-all ${
+                  selectedImage === index + 1
+                    ? 'ring-4 ring-primary'
+                    : 'hover:opacity-90'
+                }`}
+              >
+                <Image
+                  src={image}
+                  alt={`Gallery image ${index + 2}`}
+                  fill
+                  className="object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {title && (
+        <div className="pt-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            {title}
+          </h1>
+          {location && (
+            <p className="text-gray-600">{location}</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
