@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/Button';
 
 interface ApplyFilterButtonProps {
   filters: {
-    search: string;
     city: string;
     province: string;
     gender: string;

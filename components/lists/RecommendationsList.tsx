@@ -5,10 +5,20 @@ import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { Carousel } from '@/components/ui/Carousel';
 import { KosCard } from '@/components/cards/KosCard';
-import { Kost } from '@/types/kost.types';
+
+interface Room {
+  id: string;
+  image: string;
+  title: string;
+  amenities: string[];
+  gender?: string[];
+  pricePerMonth: number;
+  availableCount: number;
+  availabilityText: string;
+}
 
 export function RecommendationsList() {
-  const [kosts, setKosts] = useState<Kost[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
 
   const skeletonData = useMemo(() => 
@@ -20,34 +30,34 @@ export function RecommendationsList() {
       location: 'Loading...',
       district: 'Loading...',
       amenities: 'Loading...',
-      originalPrice: 2750000,
-      discountedPrice: 2500000,
-      discountPercent: 10,
-      promoType: 'Bulan Pertama',
+      originalPrice: 0,
+      discountedPrice: 0,
+      discountPercent: 0,
+      promoType: 'Loading...',
       promoDetails: 'Tersedia',
     }))
   , []);
 
   useEffect(() => {
-    async function fetchKosts() {
+    async function fetchRooms() {
       try {
-        const response = await fetch('/api/kosts?limit=10');
+        const response = await fetch('/api/rooms?limit=10');
         if (response.ok) {
           const data = await response.json();
-          setKosts(data.data || []);
+          setRooms(data.data || []);
         } else {
-          console.error('Failed to fetch kosts:', response.statusText);
-          setKosts([]);
+          console.error('Failed to fetch rooms:', response.statusText);
+          setRooms([]);
         }
       } catch (error) {
-        console.error('Error fetching kosts:', error);
-        setKosts([]);
+        console.error('Error fetching rooms:', error);
+        setRooms([]);
       } finally {
         setLoading(false);
       }
     }
     
-    fetchKosts();
+    fetchRooms();
   }, []);
 
   const getGenderLabel = (gender?: string[]) => {
@@ -58,27 +68,27 @@ export function RecommendationsList() {
     return undefined;
   };
 
-  const transformedKosts = useMemo(() => 
-    kosts.map((kost) => ({
-      id: kost.id,
-      image: kost.images?.[0] || '/images/dummykost.png',
+  const transformedRooms = useMemo(() => 
+    rooms.map((room) => ({
+      id: room.id,
+      image: room.image || '/images/dummykost.png',
       rating: 4.5,
-      title: kost.name,
-      location: `${kost.city}, ${kost.province}`,
-      district: `${kost.district || kost.address}`,
-      amenities: kost.amenities?.slice(0, 3).join(' • ') || 'Fasilitas Lengkap',
-      gender: getGenderLabel(kost.gender),
-      originalPrice: 2750000,
-      discountedPrice: 2500000,
-      discountPercent: 10,
-      promoType: 'Bulan Pertama',
-      promoDetails: 'Sisa 2 Kamar',
+      title: room.title,
+      location: '',
+      district: room.title.split(' - ')[2] || '',
+      amenities: room.amenities?.slice(0, 3).join(' • ') || 'Fasilitas Lengkap',
+      gender: getGenderLabel(room.gender),
+      originalPrice: room.pricePerMonth || 0,
+      discountedPrice: room.pricePerMonth || 0,
+      discountPercent: 0,
+      promoType: room.availabilityText,
+      promoDetails: `${room.availableCount} Kamar`,
     }))
-  , [kosts]);
+  , [rooms]);
 
-  const displayKosts = loading ? skeletonData : transformedKosts;
+  const displayRooms = loading ? skeletonData : transformedRooms;
 
-  if (!loading && transformedKosts.length === 0) {
+  if (!loading && transformedRooms.length === 0) {
     return (
       <section className="py-12 md:py-16 bg-white overflow-hidden">
         <Container>
@@ -99,8 +109,8 @@ export function RecommendationsList() {
           actionLabel="Lihat Semua"
           onActionClick={() => window.location.href = '/kos'}
         >
-          {displayKosts.map((kos) => (
-            <KosCard key={kos.id} {...kos} isLoading={loading} />
+          {displayRooms.map((room) => (
+            <KosCard key={room.id} {...room} isLoading={loading} />
           ))}
         </Carousel>
       </Container>

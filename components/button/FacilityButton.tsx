@@ -17,7 +17,7 @@ export function FacilityButton({ label, icon, emoji }: FacilityButtonProps) {
     >
       <span>{label}</span>
       {icon ? (
-        <Image src={icon} alt="" width={24} height={16} className="object-contain" />
+        <Image src={icon} alt={`${label} icon`} width={24} height={16} className="object-contain" />
       ) : (
         <span>{emoji}</span>
       )}

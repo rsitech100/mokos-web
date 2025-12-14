@@ -2,15 +2,25 @@ import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/Button';
 import { KosCard } from '@/components/cards/KosCard';
-import { Kost } from '@/types/kost.types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+interface Room {
+  id: string;
+  image: string;
+  title: string;
+  amenities: string[];
+  gender?: string[];
+  pricePerMonth: number;
+  availableCount: number;
+  availabilityText: string;
+}
+
 export async function KosReady() {
-  let kosts: Kost[] = [];
+  let rooms: Room[] = [];
 
   try {
-    const url = `${API_BASE_URL}/api/user/kosts?limit=10`;
+    const url = `${API_BASE_URL}/api/user/rooms?limit=10`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -21,10 +31,10 @@ export async function KosReady() {
 
     if (response.ok) {
       const data = await response.json();
-      kosts = data.data || [];
+      rooms = data.data || [];
     }
   } catch (error) {
-
+    console.error('Error fetching rooms:', error);
   }
 
   const getGenderLabel = (gender?: string[]) => {
@@ -35,24 +45,24 @@ export async function KosReady() {
     return undefined;
   };
 
-  const transformedKosts = kosts.map((kost) => ({
-    id: kost.id,
-    image: kost.images?.[0] || '/images/dummykost.png',
+  const transformedRooms = rooms.map((room) => ({
+    id: room.id,
+    image: room.image || '/images/dummykost.png',
     rating: 4.5,
-    title: kost.name,
-    location: `${kost.city}, ${kost.province}`,
-    district: `${kost.district || kost.address}`,
-    amenities: kost.amenities?.slice(0, 3).join(' • ') || 'Fasilitas Lengkap',
-    gender: getGenderLabel(kost.gender),
-    originalPrice: 2750000,
-    discountedPrice: 2500000,
-    discountPercent: 10,
-    promoType: 'Bulan Pertama',
-    promoDetails: 'Sisa 2 Kamar',
+    title: room.title,
+    location: '',
+    district: room.title.split(' - ')[2] || '',
+    amenities: room.amenities?.slice(0, 3).join(' • ') || 'Fasilitas Lengkap',
+    gender: getGenderLabel(room.gender),
+    originalPrice: room.pricePerMonth || 0,
+    discountedPrice: room.pricePerMonth || 0,
+    discountPercent: 0,
+    promoType: room.availabilityText,
+    promoDetails: `${room.availableCount} Kamar`,
   }));
 
-  const displayKosts = transformedKosts.slice(0, 6);
-  const showViewAllButton = transformedKosts.length >= 10;
+  const displayRooms = transformedRooms.slice(0, 6);
+  const showViewAllButton = transformedRooms.length >= 10;
 
   return (
     <section className="py-12 md:py-16 bg-white">
@@ -67,8 +77,8 @@ export async function KosReady() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {displayKosts.map((kos) => (
-            <KosCard key={kos.id} {...kos} className="w-full" />
+          {displayRooms.map((room) => (
+            <KosCard key={room.id} {...room} className="w-full" />
           ))}
         </div>
 

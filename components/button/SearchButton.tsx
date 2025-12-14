@@ -7,14 +7,16 @@ import { Button } from '../ui/Button';
 interface SearchButtonProps {
   placeholder?: string;
   className?: string;
+  initialValue?: string;
 }
 
 export function SearchButton({ 
   placeholder = 'Masukkan nama lokasi / area / alamat',
-  className 
+  className,
+  initialValue = ''
 }: SearchButtonProps) {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialValue);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

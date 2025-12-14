@@ -11,6 +11,7 @@ interface RoomType {
   discount: number | null;
   price: number;
   originalPrice?: number;
+  durationLabel?: string;
 }
 
 interface KosDetailTabsProps {
@@ -45,42 +46,48 @@ export function KosDetailTabs({
 
   const selectedRoom = roomTypes.find(r => r.id === selectedTab) || roomTypes[0];
 
+  if (!roomTypes || roomTypes.length === 0) {
+    return (
+      <div className="bg-white p-8 border border-gray-200 rounded-xl text-center">
+        <p className="text-gray-600 text-lg">Maaf kos ini belum tersedia</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-0">
-      <div className="flex items-center gap-0 rounded-t-xl overflow-hidden border border-gray-200 bg-gray-50">
+      <div className="flex items-center gap-0 rounded-t-xl border border-gray-200 bg-gray-50">
         {roomTypes.map((type) => (
-          <button
-            key={type.id}
-            type="button"
-            onClick={() => handleTabClick(type.id)}
-            disabled={loading}
-            className={cn(
-              'relative flex-1 py-3 px-4 text-sm font-medium text-center transition-all',
-              'border-r last:border-r-0 border-gray-200',
-              selectedTab === type.id
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'bg-transparent text-gray-600 hover:bg-white/50',
-              loading && 'opacity-50 cursor-not-allowed'
-            )}
-            role="tab"
-            aria-selected={selectedTab === type.id}
-          >
-            <div className="flex flex-col items-center gap-0.5">
-              <span className={cn(
-                'font-semibold',
-                selectedTab === type.id && 'text-gray-900'
-              )}>{type.name}</span>
-              <span className={cn(
-                'text-xs',
-                selectedTab === type.id ? 'text-gray-700' : 'text-gray-500'
-              )}>{type.beds}</span>
-            </div>
+          <div key={type.id} className="relative flex-1">
+            <button
+              type="button"
+              onClick={() => handleTabClick(type.id)}
+              disabled={loading}
+              className={cn(
+                'w-full py-3 px-4 text-sm font-medium text-center transition-all',
+                'border-r last:border-r-0 border-gray-200',
+                'first:rounded-tl-xl last:rounded-tr-xl',
+                selectedTab === type.id
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'bg-transparent text-gray-600 hover:bg-white/50',
+                loading && 'opacity-50 cursor-not-allowed'
+              )}
+              role="tab"
+              aria-selected={selectedTab === type.id}
+            >
+              <div className="flex flex-col items-center gap-0.5">
+                <span className={cn(
+                  'text-sm',
+                  selectedTab === type.id && 'text-gray-900 font-medium'
+                )}>{type.beds}</span>
+              </div>
+            </button>
             {type.discount && (
-              <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              <span className="absolute -top-2 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full z-10 shadow-md">
                 -{type.discount}%
               </span>
             )}
-          </button>
+          </div>
         ))}
       </div>
 
@@ -97,7 +104,7 @@ export function KosDetailTabs({
           <span className="text-3xl font-bold text-red-600">
             {formatPrice(selectedRoom.price)}
           </span>
-          <span className="text-gray-600">/bulan</span>
+          <span className="text-gray-600">/{selectedRoom.durationLabel || 'bulan'}</span>
         </div>
 
         {features.length > 0 && (

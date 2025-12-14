@@ -112,15 +112,12 @@ export function KosCard({
             <span className="text-lg font-bold text-red-600">
               {formatPrice(discountedPrice)}
             </span>
-            <span className="text-sm text-gray-400 line-through">
-              {formatPrice(originalPrice)}
-            </span>
           </div>
           <p className={cn(
             'text-xs text-gray-600 transition-all duration-300',
             isLoading && 'blur-sm'
           )}>
-            Diskon {discountPercent}% ({promoType}) • {promoDetails}
+            {promoType} • {promoDetails}
           </p>
         </div>
       </div>

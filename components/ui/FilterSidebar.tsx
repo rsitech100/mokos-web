@@ -16,7 +16,6 @@ interface FilterSidebarProps {
 
 export function FilterSidebar({ searchParams }: FilterSidebarProps) {
   const initialFilters = {
-    search: searchParams.search || '',
     city: searchParams.city || '',
     province: searchParams.province || '',
     gender: searchParams.gender || '',

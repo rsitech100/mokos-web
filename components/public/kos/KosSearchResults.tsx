@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { FilterSidebar } from '@/components/ui/FilterSidebar';
 import { KosCard } from '@/components/cards/KosCard';
@@ -5,20 +8,14 @@ import { SearchButton } from '@/components/button/SearchButton';
 
 interface Kost {
   id: string;
-  name: string;
-  description: string;
-  address: string;
-  city: string;
-  province: string;
-  district: string;
+  image: string;
+  title: string;
   amenities: string[];
   gender: string[];
-  images: string[];
-  phoneNumber: string;
-  rooms: Array<{
-    id: string;
-    price: number;
-  }>;
+  prices: any[];
+  pricePerMonth: number | null;
+  availableCount: number;
+  availabilityText: string;
 }
 
 interface KosSearchResultsProps {
@@ -35,47 +32,49 @@ interface KosSearchResultsProps {
   };
 }
 
-async function fetchKosts(searchParams: KosSearchResultsProps['searchParams']) {
-  try {
-    const params = new URLSearchParams();
-    
-    // Add all search params to the API call
-    Object.entries(searchParams).forEach(([key, value]) => {
-      if (value) params.set(key, value);
-    });
-
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mokos.hla12.xyz';
-    const response = await fetch(`${apiUrl}/api/user/kosts?${params.toString()}`, {
-      next: { revalidate: 60 }, // Revalidate every 60 seconds
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch kosts');
-    }
-    
-    const data = await response.json();
-    return {
-      kosts: data.data || [],
-      total: data.metadata?.pagination?.total || 0,
-      pagination: data.metadata?.pagination || null,
-    };
-  } catch (error) {
-    console.error('Error fetching kosts:', error);
-    return {
-      kosts: [],
-      total: 0,
-    };
-  }
-}
-
 function getGenderLabel(genderArray: string[]): string {
   if (!genderArray || genderArray.length === 0) return 'Campur';
   if (genderArray.length === 2) return 'Campur';
   return genderArray[0] === 'male' ? 'Putra' : 'Putri';
 }
 
-export async function KosSearchResults({ searchParams }: KosSearchResultsProps) {
-  const { kosts, total, pagination } = await fetchKosts(searchParams);
+export function KosSearchResults({ searchParams }: KosSearchResultsProps) {
+  const [kosts, setKosts] = useState<Kost[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pagination, setPagination] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchKosts() {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams();
+        
+        Object.entries(searchParams).forEach(([key, value]) => {
+          if (value) params.set(key, value);
+        });
+
+        const response = await fetch(`/api/rooms?${params.toString()}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch kosts');
+        }
+        
+        const data = await response.json();
+        setKosts(data.data || []);
+        setTotal(data.metadata?.pagination?.total || 0);
+        setPagination(data.metadata?.pagination || null);
+      } catch (error) {
+        console.error('Error fetching kosts:', error);
+        setKosts([]);
+        setTotal(0);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchKosts();
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -85,7 +84,10 @@ export async function KosSearchResults({ searchParams }: KosSearchResultsProps) 
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               Temukan Kos Impianmu
             </h1>
-            <SearchButton placeholder="Cari kos berdasarkan lokasi, nama, atau alamat..." />
+            <SearchButton 
+              placeholder="Cari kos berdasarkan lokasi, nama, atau alamat..." 
+              initialValue={searchParams.search || ''}
+            />
           </div>
         </Container>
       </div>
@@ -93,12 +95,10 @@ export async function KosSearchResults({ searchParams }: KosSearchResultsProps) 
       <Container>
         <div className="py-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Filter Sidebar */}
             <aside className="lg:col-span-1">
               <FilterSidebar searchParams={searchParams} />
             </aside>
 
-            {/* Main Content */}
             <main className="lg:col-span-3">
               <div className="mb-6">
                 <div className="flex items-center justify-between">
@@ -110,7 +110,20 @@ export async function KosSearchResults({ searchParams }: KosSearchResultsProps) 
                 </div>
               </div>
 
-              {kosts.length === 0 ? (
+              {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
+                      <div className="w-full h-48 bg-gray-200"></div>
+                      <div className="p-4 space-y-3">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-6 bg-gray-200 rounded w-2/3"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : kosts.length === 0 ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
                   <div className="max-w-md mx-auto">
                     <svg
@@ -138,19 +151,17 @@ export async function KosSearchResults({ searchParams }: KosSearchResultsProps) 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {kosts.map((kost: Kost) => {
                     const genderLabel = getGenderLabel(kost.gender);
-                    const amenitiesText = kost.amenities.slice(0, 3).join(' • ');
-                    const price = kost.rooms && kost.rooms.length > 0 
-                      ? Math.min(...kost.rooms.map(room => room.price))
-                      : 0;
+                    const amenitiesText = kost.amenities?.slice(0, 3).join(' • ') || '';
+                    const price = kost.pricePerMonth || 0;
                     
                     return (
                       <KosCard
                         key={kost.id}
                         id={kost.id}
-                        title={kost.name}
-                        location={kost.address}
-                        district={kost.district}
-                        image={kost.images[0] || '/images/placeholder.jpg'}
+                        title={kost.title}
+                        location={kost.availabilityText}
+                        district=""
+                        image={kost.image || '/images/placeholder.jpg'}
                         rating={4.5}
                         amenities={amenitiesText}
                         gender={genderLabel}
@@ -165,7 +176,6 @@ export async function KosSearchResults({ searchParams }: KosSearchResultsProps) 
                 </div>
               )}
 
-              {/* Pagination */}
               {pagination?.hasNext && (
                 <div className="mt-8 text-center">
                   <a

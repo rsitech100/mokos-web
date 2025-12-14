@@ -5,15 +5,52 @@ import { Container } from '@/components';
 import { KosDetailGallery } from '@/components/public/detail/KosDetailGallery';
 import { KosDetailInfo } from '@/components/public/detail/KosDetailInfo';
 import { RecommendationsList } from '@/components/lists/RecommendationsList';
-import { Kost } from '@/types/kost.types';
+
+interface Price {
+  id: string;
+  roomId: string;
+  price: string;
+  durationType: string;
+  strikePrice: string | null;
+  downPaymentAmount: string | null;
+  downPaymentPercentage: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface RoomDetail {
+  id: string;
+  kostId: string;
+  roomNumber: string;
+  type: string;
+  capacity: number;
+  inventory: number;
+  size: string;
+  floor: number;
+  description: string;
+  facilities: string[];
+  images: string[];
+  status: string;
+  isActive: boolean;
+  prices: Price[];
+  kost: {
+    id: string;
+    name: string;
+    address: string;
+    city: string;
+  };
+}
 
 interface KosDetailProps {
   slug: string;
 }
 
-async function fetchKost(slug: string): Promise<Kost | null> {
+async function fetchRoom(slug: string): Promise<RoomDetail | null> {
   try {
-    const response = await fetch(`https://mokos.hla12.xyz/api/user/kosts/${slug}`, {
+    // Use external API directly for server component
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mokos.hla12.xyz';
+    const response = await fetch(`${apiUrl}/api/user/rooms/${slug}`, {
       cache: 'no-store',
     });
     
@@ -24,63 +61,104 @@ async function fetchKost(slug: string): Promise<Kost | null> {
     const result = await response.json();
     return result.data || null;
   } catch (err) {
-    console.error('Error fetching kost:', err);
+    console.error('Error fetching room:', err);
     return null;
   }
 }
 
-export async function KosDetail({ slug }: KosDetailProps) {
-  const kost = await fetchKost(slug);
+function getDurationLabel(durationType: string): string {
+  const labels: Record<string, string> = {
+    '1day': '1 hari',
+    '7days': '7 hari',
+    '1month': '1 bulan',
+    '6months': '6 bulan',
+    '12months': '12 bulan',
+  };
+  return labels[durationType] || durationType;
+}
 
-  if (!kost) {
+function getDurationName(durationType: string): string {
+  const names: Record<string, string> = {
+    '1day': '1D',
+    '7days': '7D',
+    '1month': '1M',
+    '6months': '6M',
+    '12months': '12M',
+  };
+  return names[durationType] || durationType;
+}
+
+export async function KosDetail({ slug }: KosDetailProps) {
+  const room = await fetchRoom(slug);
+
+  if (!room) {
     notFound();
   }
 
+  const hasPrices = room.prices && room.prices.length > 0;
+
+  let roomTypes: any[] = [];
+  let defaultPrice: any = null;
+
+  if (hasPrices) {
+    roomTypes = room.prices
+      .filter(price => price.isActive)
+      .map((price, index) => ({
+        id: String(index + 1),
+        name: getDurationLabel(price.durationType),
+        beds: getDurationLabel(price.durationType),
+        discount: price.strikePrice ? 
+          Math.round(((parseFloat(price.strikePrice) - parseFloat(price.price)) / parseFloat(price.strikePrice)) * 100) : null,
+        price: parseFloat(price.price),
+        originalPrice: price.strikePrice ? parseFloat(price.strikePrice) : parseFloat(price.price),
+        durationType: price.durationType,
+        durationLabel: getDurationLabel(price.durationType),
+      }));
+
+    if (roomTypes.length === 0) {
+      roomTypes.push(...room.prices.map((price, index) => ({
+        id: String(index + 1),
+        name: getDurationLabel(price.durationType),
+        beds: getDurationLabel(price.durationType),
+        discount: price.strikePrice ? 
+          Math.round(((parseFloat(price.strikePrice) - parseFloat(price.price)) / parseFloat(price.strikePrice)) * 100) : null,
+        price: parseFloat(price.price),
+        originalPrice: price.strikePrice ? parseFloat(price.strikePrice) : parseFloat(price.price),
+        durationType: price.durationType,
+        durationLabel: getDurationLabel(price.durationType),
+      })));
+    }
+
+    defaultPrice = room.prices.find(p => p.isActive) || room.prices[0];
+  }
+
   const kosData = {
-    id: kost.id,
-    name: kost.name,
-    location: `${kost.address}, ${kost.city}`,
-    images: kost.images.length > 0 ? kost.images : [
+    id: room.id,
+    name: `${room.kost.name} - ${room.type}`,
+    location: `${room.kost.address}, ${room.kost.city}`,
+    images: room.images.length > 0 ? room.images : [
       '/images/kos-1.jpg',
       '/images/kos-2.jpg',
       '/images/kos-3.jpg',
       '/images/kos-4.jpg',
       '/images/kos-5.jpg',
     ],
-    roomTypes: [
-      { 
-        id: '1', 
-        name: '1-2', 
-        beds: '1-2 bulan', 
-        discount: null,
-        price: kost.rooms?.[0]?.price || 2750000,
-        originalPrice: kost.rooms?.[0]?.price || 2750000
-      },
-      { 
-        id: '2', 
-        name: '3-5', 
-        beds: '3-5 bulan', 
-        discount: 5,
-        price: Math.round((kost.rooms?.[0]?.price || 2750000) * 0.95),
-        originalPrice: kost.rooms?.[0]?.price || 2750000
-      },
-      { 
-        id: '3', 
-        name: '>6', 
-        beds: '>6 bulan', 
-        discount: 10,
-        price: Math.round((kost.rooms?.[0]?.price || 2750000) * 0.90),
-        originalPrice: kost.rooms?.[0]?.price || 2750000
-      },
-    ],
-    pricing: {
-      originalPrice: 2750000,
-      currentPrice: 2500000,
+    roomTypes: roomTypes,
+    pricing: hasPrices ? {
+      originalPrice: defaultPrice?.strikePrice ? parseFloat(defaultPrice.strikePrice) : parseFloat(defaultPrice?.price || '0'),
+      currentPrice: parseFloat(defaultPrice?.price || '0'),
+      pricePerMonth: getDurationLabel(defaultPrice?.durationType || '1month'),
+      discount: defaultPrice?.strikePrice ? 
+        Math.round(((parseFloat(defaultPrice.strikePrice) - parseFloat(defaultPrice.price)) / parseFloat(defaultPrice.strikePrice)) * 100) : 0,
+    } : {
+      originalPrice: 0,
+      currentPrice: 0,
       pricePerMonth: 'bulan',
-      discount: 10,
+      discount: 0,
     },
-    features: kost.amenities.length > 0 ? kost.amenities : ['Termasuk internet/wifi dan cleaning'],
-    mapUrl: `https://www.google.com/maps?q=${kost.latitude},${kost.longitude}`,
+    features: room.facilities.length > 0 ? room.facilities : ['Termasuk internet/wifi dan cleaning'],
+    mapUrl: `https://www.google.com/maps`,
+    hasPrices: hasPrices,
   };
 
   return (
@@ -103,7 +181,6 @@ export async function KosDetail({ slug }: KosDetailProps) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Map on Left */}
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
             <Image
               src="/images/map.png"
@@ -114,7 +191,6 @@ export async function KosDetail({ slug }: KosDetailProps) {
             <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-500 rounded-full -translate-x-1/2 -translate-y-1/2" />
           </div>
           
-          {/* Info on Right */}
           <KosDetailInfo data={kosData} />
         </div>
 

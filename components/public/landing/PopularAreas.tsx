@@ -25,21 +25,6 @@ export function PopularAreas() {
       name: 'Malang',
       image: '/images/malang.png',
     },
-    {
-      id: 5,
-      name: 'Malang',
-      image: '/images/malang.png',
-    },
-    {
-      id: 6,
-      name: 'Malang',
-      image: '/images/malang.png',
-    },
-    {
-      id: 7,
-      name: 'Malang',
-      image: '/images/malang.png',
-    },
   ];
 
   return (

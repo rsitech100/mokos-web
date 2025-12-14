@@ -8,7 +8,6 @@ import { ResetFilterButton } from '@/components/button/ResetFilterButton';
 
 interface FilterFormProps {
   initialFilters: {
-    search: string;
     city: string;
     province: string;
     gender: string;
@@ -58,16 +57,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
       </div>
 
       <div className="space-y-6">
-        {/* Search */}
-        <Input
-          label="Pencarian"
-          type="text"
-          value={filters.search}
-          onChange={(e) => handleFilterChange('search', e.target.value)}
-          placeholder="Nama, deskripsi, alamat..."
-        />
-
-        {/* City */}
         <Input
           label="Kota"
           type="text"
@@ -76,7 +65,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           placeholder="Contoh: Jakarta"
         />
 
-        {/* Province */}
         <Input
           label="Provinsi"
           type="text"
@@ -85,7 +73,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           placeholder="Contoh: DKI Jakarta"
         />
 
-        {/* Gender */}
         <Dropdown
           label="Jenis Kelamin"
           value={filters.gender}
@@ -98,7 +85,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           placeholder="Pilih jenis kelamin"
         />
 
-        {/* Price Range */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Harga Per Bulan
@@ -119,7 +105,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           </div>
         </div>
 
-        {/* Facilities */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">
             Fasilitas
@@ -142,7 +127,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           </div>
         </div>
 
-        {/* Sort By */}
         <Dropdown
           label="Urutkan Berdasarkan"
           value={filters.sortBy}
@@ -154,7 +138,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           ]}
         />
 
-        {/* Order */}
         <Dropdown
           label="Urutan"
           value={filters.order}
@@ -165,7 +148,6 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
           ]}
         />
 
-        {/* Apply Button */}
         <ApplyFilterButton filters={filters} selectedFacilities={selectedFacilities} />
       </div>
     </>

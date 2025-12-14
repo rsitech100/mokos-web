@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { KosSearchResults } from '@/components/public/kos/KosSearchResults';
+import { KosSearchResults } from '@/components/public/search/KosSearchResults';
 
 interface PageProps {
   searchParams: Promise<{
