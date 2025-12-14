@@ -1,13 +1,12 @@
-'use client';
-
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Container } from './Container';
 import { Button } from '@/components/ui/Button';
+import { getUserData } from '@/lib/auth/session';
+import { UserMenu } from './UserMenu';
+import { NavLink } from './NavLink';
 
-export function Header() {
-  const pathname = usePathname();
-  const isHomePage = pathname === '/' || pathname === '';
+export async function Header() {
+  const user = await getUserData();
 
   const navItems = [
     { label: 'Area Kos Populer', href: '#popular' },
@@ -15,16 +14,6 @@ export function Header() {
     { label: 'Pusat Bantuan', href: '#help' },
     { label: 'Syarat dan Ketentuan', href: '#terms' },
   ];
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (isHomePage && href.startsWith('#')) {
-      e.preventDefault();
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  };
 
   return (
     <header className="sticky top-4 z-50 w-full pointer-events-none">
@@ -50,20 +39,19 @@ export function Header() {
 
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={isHomePage ? item.href : `/${item.href}`}
-                onClick={(e) => handleNavClick(e, item.href)}
-                className="text-sm font-normal text-gray-700 hover:text-primary transition-colors"
-              >
-                {item.label}
-              </Link>
+              <NavLink key={item.href} href={item.href} label={item.label} />
             ))}
           </div>
 
-          <Button variant="primary" size="md">
-            Masuk
-          </Button>
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <Link href="/login">
+              <Button variant="primary" size="md">
+                Masuk
+              </Button>
+            </Link>
+          )}
         </nav>
         </div>
       </Container>

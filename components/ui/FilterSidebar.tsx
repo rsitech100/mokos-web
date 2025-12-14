@@ -1,4 +1,4 @@
-import { FilterForm } from '../form/FilterForm';
+import { FilterForm } from '../forms/FilterForm';
 
 interface FilterSidebarProps {
   searchParams: {
