@@ -10,7 +10,7 @@ export async function Header() {
 
   const navItems = [
     { label: 'Area Kos Populer', href: '/kota' },
-    { label: 'Rekomendasi Kos', href: '#recommendations' },
+    { label: 'Rekomendasi Kos', href: '/kos' },
     { label: 'Pusat Bantuan', href: '/bantuan' },
     { label: 'Syarat dan Ketentuan', href: '/syarat-ketentuan' },
   ];
