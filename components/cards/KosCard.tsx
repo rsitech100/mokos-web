@@ -13,6 +13,7 @@ interface KosCardProps {
   location: string;
   district: string;
   amenities: string;
+  gender?: string;
   originalPrice: number;
   discountedPrice: number;
   discountPercent: number;
@@ -30,6 +31,7 @@ export function KosCard({
   location,
   district,
   amenities,
+  gender,
   originalPrice,
   discountedPrice,
   discountPercent,
@@ -65,11 +67,18 @@ export function KosCard({
             isLoading && 'blur-sm'
           )}
         />
-        <div className="absolute top-3 left-3 flex items-center gap-1 bg-white px-2.5 py-1 rounded-full shadow-sm">
-          <svg className="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-          <span className="text-sm font-semibold text-gray-900">{rating}</span>
+        <div className="absolute top-3 left-3 flex items-center gap-2">
+          {gender && (
+            <span className="bg-white px-2.5 py-1 rounded-full shadow-sm text-sm font-medium text-gray-700">
+              {gender}
+            </span>
+          )}
+          <div className="flex items-center gap-1 bg-white px-2.5 py-1 rounded-full shadow-sm">
+            <svg className="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <span className="text-sm font-semibold text-gray-900">{rating}</span>
+          </div>
         </div>
       </div>
 
@@ -85,14 +94,14 @@ export function KosCard({
           'text-sm text-gray-600 line-clamp-1 transition-all duration-300',
           isLoading && 'blur-sm'
         )}>
-          {location}
+          {district}
         </p>
 
         <p className={cn(
           'text-xs text-gray-500 transition-all duration-300',
           isLoading && 'blur-sm'
         )}>
-          {district} • {amenities}
+          {amenities}
         </p>
 
         <div className="pt-2">
@@ -103,15 +112,12 @@ export function KosCard({
             <span className="text-lg font-bold text-red-600">
               {formatPrice(discountedPrice)}
             </span>
-            <span className="text-sm text-gray-400 line-through">
-              {formatPrice(originalPrice)}
-            </span>
           </div>
           <p className={cn(
             'text-xs text-gray-600 transition-all duration-300',
             isLoading && 'blur-sm'
           )}>
-            Diskon {discountPercent}% ({promoType}) • {promoDetails}
+            {promoType} • {promoDetails}
           </p>
         </div>
       </div>

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'mokos.hla12.xyz',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.99.co',
+      },
     ],
   },
 };

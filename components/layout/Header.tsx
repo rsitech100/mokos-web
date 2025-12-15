@@ -1,11 +1,13 @@
-'use client';
-
-import React from 'react';
 import Link from 'next/link';
 import { Container } from './Container';
 import { Button } from '@/components/ui/Button';
+import { getUserData } from '@/lib/auth/session';
+import { UserMenu } from './UserMenu';
+import { NavLink } from './NavLink';
 
-export function Header() {
+export async function Header() {
+  const user = await getUserData();
+
   const navItems = [
     { label: 'Area Kos Populer', href: '#popular' },
     { label: 'Rekomendasi Kos', href: '#recommendations' },
@@ -37,19 +39,19 @@ export function Header() {
 
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm font-normal text-gray-700 hover:text-primary transition-colors"
-              >
-                {item.label}
-              </Link>
+              <NavLink key={item.href} href={item.href} label={item.label} />
             ))}
           </div>
 
-          <Button variant="primary" size="md">
-            Masuk
-          </Button>
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <Link href="/login">
+              <Button variant="primary" size="md">
+                Masuk
+              </Button>
+            </Link>
+          )}
         </nav>
         </div>
       </Container>

@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -21,7 +19,7 @@ export function PopularAreaCard({
     <div
       onClick={onClick}
       className={cn(
-        'flex-shrink-0 w-[210px] cursor-pointer group',
+        'flex-shrink-0 w-[350px] cursor-pointer group',
         className
       )}
     >
@@ -30,7 +28,9 @@ export function PopularAreaCard({
           src={image}
           alt={name}
           fill
+          sizes="250px"
           className="object-cover group-hover:scale-105 transition-transform duration-300"
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
