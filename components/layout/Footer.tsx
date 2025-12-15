@@ -116,14 +116,6 @@ export function Footer() {
 
           <div className="mt-12 pt-6 border-t border-gray-200">
             <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap gap-6">
-                <Link href="/terms" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Terms of Service
-                </Link>
-                <Link href="/privacy" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  Privacy Policy
-                </Link>
-              </div>
               <p className="text-sm text-gray-500">
                 Copyright ©2026. All Rights Reserved.
               </p>
