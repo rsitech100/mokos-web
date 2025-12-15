@@ -84,6 +84,18 @@ export function UserMenu({ user }: UserMenuProps) {
                 </div>
                 <span className="font-medium">Edit Profil</span>
               </Link>
+              <Link
+                href="/riwayat"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors group"
+                onClick={() => setShowDropdown(false)}
+              >
+                <div className="w-8 h-8 rounded-lg bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="font-medium">Riwayat</span>
+              </Link>
               <div className="my-1 border-t border-gray-100"></div>
               <button
                 onClick={handleLogout}

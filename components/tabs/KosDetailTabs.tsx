@@ -3,15 +3,18 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
+import { BookingModal } from '@/components/ui/BookingModal';
 
 interface RoomType {
   id: string;
+  roomId?: string;
   name: string;
   beds: string;
   discount: number | null;
   price: number;
   originalPrice?: number;
   durationLabel?: string;
+  durationType?: string;
 }
 
 interface KosDetailTabsProps {
@@ -20,6 +23,7 @@ interface KosDetailTabsProps {
   onTabChange?: (tabId: string) => void;
   loading?: boolean;
   features?: string[];
+  kosName?: string;
 }
 
 export function KosDetailTabs({ 
@@ -27,9 +31,11 @@ export function KosDetailTabs({
   defaultSelected,
   onTabChange,
   loading = false,
-  features = []
+  features = [],
+  kosName
 }: KosDetailTabsProps) {
   const [selectedTab, setSelectedTab] = useState(defaultSelected || roomTypes[0]?.id);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const handleTabClick = (tabId: string) => {
     setSelectedTab(tabId);
@@ -123,7 +129,12 @@ export function KosDetailTabs({
         )}
 
         <div className="space-y-3">
-          <Button variant="primary" size="lg" className="w-full">
+          <Button 
+            variant="primary" 
+            size="lg" 
+            className="w-full"
+            onClick={() => setIsBookingModalOpen(true)}
+          >
             Lihat Tipe Kamar
           </Button>
           <button className="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
@@ -134,6 +145,19 @@ export function KosDetailTabs({
           </button>
         </div>
       </div>
+
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        room={{
+          id: selectedRoom.roomId || selectedRoom.id,
+          name: selectedRoom.name,
+          price: selectedRoom.price,
+          durationType: selectedRoom.durationType || '1month',
+          durationLabel: selectedRoom.durationLabel || 'Bulanan',
+        }}
+        kosName={kosName}
+      />
     </div>
   );
 }

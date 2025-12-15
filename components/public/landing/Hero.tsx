@@ -36,8 +36,8 @@ export function Hero() {
             </h1>
 
             <p className="text-base font-light lg:text-xl text-gray-600 leading-relaxed">
-              Jelajahi kos dan properti terbaik di banyak lokasi. Proses<br/>
-              cepat, pilihan lengkap, dan pengalaman pencarian yang<br/>lebih praktis.
+              Jelajahi kos dan properti terbaik di banyak lokasi. Proses 
+              cepat, pilihan lengkap, dan pengalaman pencarian yang lebih praktis.
             </p>
 
             <SearchButton className="mt-6" />

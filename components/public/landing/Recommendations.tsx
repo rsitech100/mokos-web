@@ -1,8 +1,7 @@
 import { Container } from '@/components/layout/Container';
 import { Carousel } from '@/components/ui/Carousel';
 import { KosCard } from '@/components/cards/KosCard';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { getLocalApiUrl } from '@/lib/utils/api';
 
 interface Room {
   id: string;
@@ -19,7 +18,7 @@ export async function Recommendations() {
   let rooms: Room[] = [];
 
   try {
-    const url = `${API_BASE_URL}/api/user/rooms?limit=10`;
+    const url = getLocalApiUrl('/api/rooms', { limit: '10' });
     const response = await fetch(url, {
       method: 'GET',
       headers: {

@@ -5,6 +5,7 @@ import { Container } from '@/components';
 import { KosDetailGallery } from '@/components/public/detail/KosDetailGallery';
 import { KosDetailInfo } from '@/components/public/detail/KosDetailInfo';
 import { RecommendationsList } from '@/components/lists/RecommendationsList';
+import { getLocalApiUrl } from '@/lib/utils/api';
 
 interface Price {
   id: string;
@@ -48,9 +49,8 @@ interface KosDetailProps {
 
 async function fetchRoom(slug: string): Promise<RoomDetail | null> {
   try {
-    // Use external API directly for server component
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mokos.hla12.xyz';
-    const response = await fetch(`${apiUrl}/api/user/rooms/${slug}`, {
+    const url = getLocalApiUrl(`/api/rooms/${slug}`);
+    const response = await fetch(url, {
       cache: 'no-store',
     });
     
@@ -101,33 +101,38 @@ export async function KosDetail({ slug }: KosDetailProps) {
   let defaultPrice: any = null;
 
   if (hasPrices) {
-    roomTypes = room.prices
+    const uniquePrices = room.prices
       .filter(price => price.isActive)
-      .map((price, index) => ({
-        id: String(index + 1),
-        name: getDurationLabel(price.durationType),
-        beds: getDurationLabel(price.durationType),
-        discount: price.strikePrice ? 
-          Math.round(((parseFloat(price.strikePrice) - parseFloat(price.price)) / parseFloat(price.strikePrice)) * 100) : null,
-        price: parseFloat(price.price),
-        originalPrice: price.strikePrice ? parseFloat(price.strikePrice) : parseFloat(price.price),
-        durationType: price.durationType,
-        durationLabel: getDurationLabel(price.durationType),
-      }));
+      .reduce((acc, price) => {
+        const existing = acc.find(p => p.durationType === price.durationType);
+        if (!existing) {
+          acc.push(price);
+        }
+        return acc;
+      }, [] as Price[]);
 
-    if (roomTypes.length === 0) {
-      roomTypes.push(...room.prices.map((price, index) => ({
-        id: String(index + 1),
-        name: getDurationLabel(price.durationType),
-        beds: getDurationLabel(price.durationType),
-        discount: price.strikePrice ? 
-          Math.round(((parseFloat(price.strikePrice) - parseFloat(price.price)) / parseFloat(price.strikePrice)) * 100) : null,
-        price: parseFloat(price.price),
-        originalPrice: price.strikePrice ? parseFloat(price.strikePrice) : parseFloat(price.price),
-        durationType: price.durationType,
-        durationLabel: getDurationLabel(price.durationType),
-      })));
-    }
+    const pricesToUse = uniquePrices.length > 0 
+      ? uniquePrices 
+      : room.prices.reduce((acc, price) => {
+          const existing = acc.find(p => p.durationType === price.durationType);
+          if (!existing) {
+            acc.push(price);
+          }
+          return acc;
+        }, [] as Price[]);
+
+    roomTypes = pricesToUse.map((price) => ({
+      id: price.id,
+      roomId: room.id,
+      name: getDurationLabel(price.durationType),
+      beds: getDurationLabel(price.durationType),
+      discount: price.strikePrice ? 
+        Math.round(((parseFloat(price.strikePrice) - parseFloat(price.price)) / parseFloat(price.strikePrice)) * 100) : null,
+      price: parseFloat(price.price),
+      originalPrice: price.strikePrice ? parseFloat(price.strikePrice) : parseFloat(price.price),
+      durationType: price.durationType,
+      durationLabel: getDurationLabel(price.durationType),
+    }));
 
     defaultPrice = room.prices.find(p => p.isActive) || room.prices[0];
   }
