@@ -196,7 +196,7 @@ export async function KosDetail({ slug }: KosDetailProps) {
             <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-500 rounded-full -translate-x-1/2 -translate-y-1/2" />
           </div>
           
-          <KosDetailInfo data={kosData} />
+          <KosDetailInfo data={kosData} kostId={room.kostId} />
         </div>
 
         <div className="mb-12">

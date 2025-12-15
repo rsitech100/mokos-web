@@ -28,6 +28,8 @@ export { KosDetailTabs } from './tabs/KosDetailTabs';
 export { RiwayatContent } from './public/riwayat/RiwayatContent';
 export { RiwayatTabs } from './tabs/RiwayatTabs';
 export { RiwayatSidebar } from './public/riwayat/RiwayatSidebar';
+
+export { ChatWidget } from './chat/ChatWidget';
 export { RiwayatFilters } from './public/riwayat/RiwayatFilters';
 export { BookingList } from './lists/BookingList';
 export { TransactionList } from './lists/TransactionList';
