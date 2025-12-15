@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      next: { revalidate: 60 },
     });
 
     if (!response.ok) {
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data, {
       status: 200,
       headers: {
-        'Cache-Control': 'no-store, max-age=0',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
       },
     });
   } catch (error) {

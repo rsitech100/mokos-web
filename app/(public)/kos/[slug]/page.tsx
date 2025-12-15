@@ -6,6 +6,9 @@ interface KosDetailPageProps {
   }>;
 }
 
+export const revalidate = 3600
+export const dynamicParams = true; 
+
 export default async function KosDetailPage({ params }: KosDetailPageProps) {
   const { slug } = await params;
   return <KosDetail slug={slug} />;
