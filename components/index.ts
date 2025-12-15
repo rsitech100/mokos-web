@@ -26,16 +26,20 @@ export { KosDetailInfo } from './public/detail/KosDetailInfo';
 export { KosDetailTabs } from './tabs/KosDetailTabs';
 
 export { RiwayatContent } from './public/riwayat/RiwayatContent';
-export { RiwayatTabs } from './public/riwayat/RiwayatTabs';
+export { RiwayatTabs } from './tabs/RiwayatTabs';
 export { RiwayatSidebar } from './public/riwayat/RiwayatSidebar';
 export { RiwayatFilters } from './public/riwayat/RiwayatFilters';
-export { BookingList } from './public/riwayat/BookingList';
-export { TransactionList } from './public/riwayat/TransactionList';
+export { BookingList } from './lists/BookingList';
+export { TransactionList } from './lists/TransactionList';
 
-// Profile components
 export { EditProfile } from './public/profile/EditProfile';
 
-// Payment components
 export { PaymentSuccessContent } from './public/payment/PaymentSuccessContent';
 export { PaymentFailedContent } from './public/payment/PaymentFailedContent';
 export { PaymentRedirect } from './public/payment/PaymentRedirect';
+
+export { KotaContent } from './public/kota/KotaContent';
+export { BantuanContent } from './public/bantuan/BantuanContent';
+export { SyaratKetentuanContent } from './public/syarat-ketentuan/SyaratKetentuanContent';
+export { TentangKamiContent } from './public/tentang-kami/TentangKamiContent';
+

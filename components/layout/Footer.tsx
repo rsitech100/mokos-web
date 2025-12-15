@@ -7,7 +7,7 @@ export function Footer() {
       title: 'MOKOS',
       links: [
         { label: 'Tentang Kami', href: '/tentang-kami' },
-        { label: 'Promosikan Kos Kamu', href: '/promosi-kos' },
+        // { label: 'Promosikan Kos Kamu', href: '/promosi-kos' },
         { label: 'Pusat Bantuan', href: '/bantuan' },
       ],
     },
@@ -15,13 +15,13 @@ export function Footer() {
       title: 'PRODUK',
       links: [
         { label: 'Kos', href: '/kos' },
-        { label: 'Apartemen', href: '/apartemen' },
+        // { label: 'Apartemen', href: '/apartemen' },
       ],
     },
     {
       title: 'KEBIJAKAN',
       links: [
-        { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },
+        // { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },
         { label: 'Syarat dan Ketentuan Umum', href: '/syarat-ketentuan' },
       ],
     },

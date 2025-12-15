@@ -3,10 +3,10 @@
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Booking, Transaction } from '@/types/booking.types';
-import { RiwayatSidebar } from './RiwayatSidebar';
-import { RiwayatFilters } from './RiwayatFilters';
-import { BookingList } from './BookingList';
-import { TransactionList } from './TransactionList';
+import { RiwayatSidebar } from '../public/riwayat/RiwayatSidebar';
+import { RiwayatFilters } from '../public/riwayat/RiwayatFilters';
+import { BookingList } from '../lists/BookingList';
+import { TransactionList } from '../lists/TransactionList';
 
 type TabType = 'bookings' | 'transactions';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Booking, Transaction } from '@/types/booking.types';
 import { getAuthToken } from '@/lib/auth/session';
 import { getLocalApiUrl } from '@/lib/utils/api';
-import { RiwayatTabs } from './RiwayatTabs';
+import { RiwayatTabs } from '../../tabs/RiwayatTabs';
 import { Container } from '@/components/layout/Container';
 
 async function fetchBookings(status?: string): Promise<Booking[]> {
