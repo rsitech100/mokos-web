@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -8,11 +9,22 @@ export async function GET(
 ) {
   try {
     const { kostId } = await params;
-    const authHeader = request.headers.get('authorization');
+    const cookieStore = await cookies();
+    const encrypted = cookieStore.get('auth_token')?.value;
     
-    if (!authHeader) {
+    if (!encrypted) {
       return NextResponse.json(
         { error: 'No authorization token provided' },
+        { status: 401 }
+      );
+    }
+
+    let token: string;
+    try {
+      token = Buffer.from(encrypted, 'base64').toString('utf-8');
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid authorization token' },
         { status: 401 }
       );
     }
@@ -21,7 +33,7 @@ export async function GET(
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        'Authorization': `Bearer ${token}`,
       },
       cache: 'no-store',
     });
@@ -59,11 +71,22 @@ export async function POST(
 ) {
   try {
     const { kostId } = await params;
-    const authHeader = request.headers.get('authorization');
+    const cookieStore = await cookies();
+    const encrypted = cookieStore.get('auth_token')?.value;
     
-    if (!authHeader) {
+    if (!encrypted) {
       return NextResponse.json(
         { error: 'No authorization token provided' },
+        { status: 401 }
+      );
+    }
+
+    let token: string;
+    try {
+      token = Buffer.from(encrypted, 'base64').toString('utf-8');
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid authorization token' },
         { status: 401 }
       );
     }
@@ -75,7 +98,7 @@ export async function POST(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(body),
       cache: 'no-store',

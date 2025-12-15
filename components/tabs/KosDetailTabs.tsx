@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { BookingModal } from '@/components/ui/BookingModal';
+import { Modal } from '@/components/ui/Modal';
 
 interface RoomType {
   id: string;
@@ -38,11 +40,38 @@ export function KosDetailTabs({
 }: KosDetailTabsProps) {
   const [selectedTab, setSelectedTab] = useState(defaultSelected || roomTypes[0]?.id);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const isUserLoggedIn = useCallback(() => {
+    if (typeof document === 'undefined') return false;
+
+    const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+    const userCookie = cookies.find((cookie) => cookie.startsWith('user_data='));
+
+    if (!userCookie) return false;
+
+    try {
+      const encoded = userCookie.split('=')[1];
+      const decoded = atob(decodeURIComponent(encoded));
+      return Boolean(JSON.parse(decoded));
+    } catch {
+      return false;
+    }
+  }, []);
 
   const handleTabClick = (tabId: string) => {
     setSelectedTab(tabId);
     onTabChange?.(tabId);
   };
+
+  const handleBookingClick = useCallback(() => {
+    if (!isUserLoggedIn()) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    setIsBookingModalOpen(true);
+  }, [isUserLoggedIn]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -135,7 +164,7 @@ export function KosDetailTabs({
             variant="primary" 
             size="lg" 
             className="w-full"
-            onClick={() => setIsBookingModalOpen(true)}
+            onClick={handleBookingClick}
           >
             Lihat Tipe Kamar
           </Button>
@@ -156,6 +185,48 @@ export function KosDetailTabs({
           </Button>
         </div>
       </div>
+
+      <Modal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        title="Login diperlukan"
+        size="sm"
+      >
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M12 11c0-1.657 1.343-3 3-3s3 1.343 3 3v1h1a3 3 0 010 6h-8a3 3 0 010-6h1v-1z" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M8 12V7a4 4 0 118 0v5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Login dibutuhkan untuk booking</p>
+              <p className="text-xs text-gray-600">Masuk untuk memilih tipe kamar dan melanjutkan pembayaran.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Link href="/login">
+              <Button className="w-full" variant="primary" size="md">
+                Login
+              </Button>
+            </Link>
+            <Link href="/register">
+              <Button className="w-full" variant="outline" size="md">
+                Daftar
+              </Button>
+            </Link>
+          </div>
+
+          <button
+            className="w-full text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            onClick={() => setIsLoginModalOpen(false)}
+          >
+            Lanjutkan nanti
+          </button>
+        </div>
+      </Modal>
 
       <BookingModal
         isOpen={isBookingModalOpen}

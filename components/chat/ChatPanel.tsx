@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { ConversationList } from '../lists/ConversationList';
 import { MessagesList } from '../lists/MessagesList';
 import type { ChatConversation } from '../lists/ConversationList';
@@ -12,23 +13,6 @@ interface ChatMessage {
   senderRole: string;
   createdAt: string;
   isRead: boolean;
-}
-
-function getTokenFromCookies(): string | null {
-  if (typeof window === 'undefined') return null;
-  
-  const cookies = document.cookie.split(';');
-  const authCookie = cookies.find(cookie => cookie.trim().startsWith('client_token='));
-  
-  if (!authCookie) return null;
-  
-  const encryptedToken = authCookie.split('=')[1];
-  
-  try {
-    return atob(decodeURIComponent(encryptedToken));
-  } catch {
-    return null;
-  }
 }
 
 interface ChatPanelProps {
@@ -45,29 +29,22 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
   const [error, setError] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [requireLogin, setRequireLogin] = useState(false);
 
   const fetchConversations = useCallback(async () => {
-    const token = getTokenFromCookies();
-    
-    if (!token) {
-      setError('Not authenticated');
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('/api/chat', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
+      const response = await fetch('/api/chat');
+      const data = await response.json().catch(() => ({}));
 
       if (response.ok) {
+        setRequireLogin(false);
         setConversations(data.data || []);
+      } else if (response.status === 401) {
+        setRequireLogin(true);
+        setError('Silakan login untuk menggunakan chat');
       } else {
         setError(data.error || 'Failed to load conversations');
       }
@@ -79,24 +56,19 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
   }, []);
 
   const fetchMessages = useCallback(async (kostId: string) => {
-    const token = getTokenFromCookies();
-    
-    if (!token) return;
-
     setMessagesLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/chat/${kostId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
+      const response = await fetch(`/api/chat/${kostId}`);
+      const data = await response.json().catch(() => ({}));
 
       if (response.ok) {
+        setRequireLogin(false);
         setMessages(data.data || []);
+      } else if (response.status === 401) {
+        setRequireLogin(true);
+        setError('Silakan login untuk menggunakan chat');
       } else {
         setError(data.error || 'Failed to load messages');
       }
@@ -110,15 +82,11 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
   const markAsRead = useCallback(async (kostId: string, hasUnread: boolean) => {
     if (!hasUnread) return;
     
-    const token = getTokenFromCookies();
-    if (!token) return;
-
     try {
       await fetch(`/api/chat/${kostId}/read`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
       });
       fetchConversations();
@@ -130,23 +98,10 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
   const sendMessage = useCallback(async () => {
     if (!messageInput.trim() || !selectedConversation) return;
 
-    const token = getTokenFromCookies();
-    if (!token) return;
-
-    // Get user ID from token (basic JWT decode)
-    const getUserId = () => {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.id || 'user';
-      } catch {
-        return 'user';
-      }
-    };
-
     const tempMessage: ChatMessage = {
       id: `temp-${Date.now()}`,
       message: messageInput,
-      senderId: getUserId(),
+      senderId: 'user',
       senderRole: 'user',
       createdAt: new Date().toISOString(),
       isRead: false
@@ -163,25 +118,25 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ message: sentMessage }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        // Replace temp message with real message from server
+        const data = await response.json().catch(() => ({}));
         setMessages(prev => prev.map(msg => 
           msg.id === tempMessage.id ? (data.data || tempMessage) : msg
         ));
       } else {
-        // Remove temp message on error
+        if (response.status === 401) {
+          setRequireLogin(true);
+          setError('Silakan login untuk menggunakan chat');
+        }
         setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
         setMessageInput(sentMessage);
       }
     } catch (err) {
       console.error('Error sending message:', err);
-      // Remove temp message on error
       setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
       setMessageInput(sentMessage);
     } finally {
@@ -193,7 +148,6 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
     setSelectedConversation(conversation);
     setView('messages');
     fetchMessages(conversation.kostId);
-    // Mark messages as read when opening conversation (only if there are unread messages)
     const hasUnread = parseInt(conversation.unreadCount || '0') > 0;
     markAsRead(conversation.kostId, hasUnread);
   }, [fetchMessages, markAsRead]);
@@ -207,7 +161,6 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
   useEffect(() => {
     fetchConversations();
     
-    // Poll conversations every 10 seconds
     const interval = setInterval(() => {
       fetchConversations();
     }, 10000);
@@ -217,13 +170,11 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
 
   useEffect(() => {
     if (initialKostId) {
-      // If we have an initialKostId, try to find existing conversation or create new one
       if (conversations.length > 0) {
         const conversation = conversations.find(c => c.kostId === initialKostId);
         if (conversation) {
           handleConversationClick(conversation);
         } else {
-          // Create a temporary conversation to open messages view
           setView('messages');
           fetchMessages(initialKostId);
           setSelectedConversation({
@@ -309,14 +260,39 @@ export function ChatPanel({ initialKostId }: ChatPanelProps) {
       <div className="flex-1 overflow-y-auto bg-gray-50">
         {view === 'list' ? (
           <div className="p-3">
-            <ConversationList
-              conversations={conversations}
-              loading={loading}
-              error={error}
-              onConversationClick={handleConversationClick}
-              onRefresh={fetchConversations}
-              formatTime={formatTime}
-            />
+            {requireLogin ? (
+              <div className="p-6 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl text-center space-y-4 shadow-sm">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-semibold">🔒</div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Login dulu untuk mulai chat</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary-hover transition-all text-sm shadow-md"
+                  >
+                    Login sekarang
+                  </Link>
+                  <button
+                    onClick={fetchConversations}
+                    className="px-4 py-2 rounded-xl bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 transition-all text-sm"
+                  >
+                    Coba lagi
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <ConversationList
+                conversations={conversations}
+                loading={loading}
+                error={error}
+                onConversationClick={handleConversationClick}
+                onRefresh={fetchConversations}
+                formatTime={formatTime}
+              />
+            )}
           </div>
         ) : (
           <MessagesList
