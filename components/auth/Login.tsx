@@ -32,16 +32,16 @@ export function Login() {
           </p>
         </div>
         <LoginForm />
-        <p className="text-center text-xs text-blue-100 mt-6">
-          Dengan masuk, Anda menyetujui{' '}
-          <Link href="/terms" className="text-white hover:underline">
-            Syarat & Ketentuan
-          </Link>{' '}
-          dan{' '}
-          <Link href="/privacy" className="text-white hover:underline">
-            Kebijakan Privasi
-          </Link>
-        </p>
+        <div className=" border-t border-blue-400/30">
+          <p className="text-center text-xs text-blue-100 mt-4">
+            Belum ingin login?{' '} <br/>
+          </p>
+        </div>
+          <p className="text-center text-xs text-blue-100 mt-1">
+            <Link href="/" className="text-white hover:underline font-semibold">
+              Jelajahi kos terlebih dahulu
+            </Link>
+          </p>
       </div>
     </div>
   );
