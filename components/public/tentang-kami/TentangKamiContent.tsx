@@ -91,7 +91,7 @@ const milestones = [
 export function TentangKamiContent() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white -mt-24 md:-mt-24 pt-36 md:pt-36 pb-16">
         <Container>
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
