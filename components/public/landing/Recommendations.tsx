@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { Container } from '@/components/layout/Container';
 import { Carousel } from '@/components/ui/Carousel';
 import { KosCard } from '@/components/cards/KosCard';
@@ -17,7 +18,12 @@ export async function Recommendations() {
   let rooms: Room[] = [];
 
   try {
-    const response = await fetch('/api/rooms?limit=10', {
+    const hdrs = await headers();
+    const host = hdrs.get('host') || 'localhost:3000';
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const url = `${protocol}://${host}/api/rooms?limit=10`;
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

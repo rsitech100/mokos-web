@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/Button';
@@ -18,7 +19,12 @@ export async function KosReady() {
   let rooms: Room[] = [];
 
   try {
-    const response = await fetch('/api/rooms?limit=10', {
+    const hdrs = await headers();
+    const host = hdrs.get('host') || 'localhost:3000';
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const url = `${protocol}://${host}/api/rooms?limit=10`;
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

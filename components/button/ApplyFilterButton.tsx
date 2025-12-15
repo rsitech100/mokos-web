@@ -24,6 +24,7 @@ export function ApplyFilterButton({ filters, selectedFacilities }: ApplyFilterBu
     const params = new URLSearchParams();
 
     Object.entries(filters).forEach(([key, value]) => {
+      if (key === 'gender' && value === 'campur') return;
       if (value) params.set(key, value);
     });
 

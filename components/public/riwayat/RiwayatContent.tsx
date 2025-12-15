@@ -1,4 +1,5 @@
 import React from 'react';
+import { headers } from 'next/headers';
 import { Booking, Transaction } from '@/types/booking.types';
 import { getAuthToken } from '@/lib/auth/session';
 import { RiwayatTabs } from '../../tabs/RiwayatTabs';
@@ -9,7 +10,12 @@ async function fetchBookings(status?: string): Promise<Booking[]> {
     const token = await getAuthToken();
     if (!token) return [];
 
-    const url = status ? `/api/bookings?status=${status}` : '/api/bookings';
+    const headersList = await headers();
+    const host = headersList.get('host');
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+    
+    const url = status ? `${baseUrl}/api/bookings?status=${status}` : `${baseUrl}/api/bookings`;
     
     const response = await fetch(url, {
       headers: {
@@ -34,7 +40,12 @@ async function fetchTransactions(paymentStatus?: string): Promise<Transaction[]>
     const token = await getAuthToken();
     if (!token) return [];
 
-    const url = paymentStatus ? `/api/transactions?paymentStatus=${paymentStatus}` : '/api/transactions';
+    const headersList = await headers();
+    const host = headersList.get('host');
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+    
+    const url = paymentStatus ? `${baseUrl}/api/transactions?paymentStatus=${paymentStatus}` : `${baseUrl}/api/transactions`;
     
     const response = await fetch(url, {
       headers: {

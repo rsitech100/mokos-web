@@ -166,7 +166,7 @@ export function KosDetailTabs({
             className="w-full"
             onClick={handleBookingClick}
           >
-            Lihat Tipe Kamar
+            Ajukan Sewa
           </Button>
           <Button 
             variant="primary" 

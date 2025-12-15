@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Container } from '@/components';
 import { KosDetailGallery } from '@/components/public/detail/KosDetailGallery';
 import { KosDetailInfo } from '@/components/public/detail/KosDetailInfo';
+import { headers } from 'next/headers';
 import { RecommendationsList } from '@/components/lists/RecommendationsList';
 
 interface Price {
@@ -48,7 +49,12 @@ interface KosDetailProps {
 
 async function fetchRoom(slug: string): Promise<RoomDetail | null> {
   try {
-    const response = await fetch(`/api/rooms/${slug}`, {
+    const hdrs = await headers();
+    const host = hdrs.get('host') || 'localhost:3000';
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const url = `${protocol}://${host}/api/rooms/${slug}`;
+
+    const response = await fetch(url, {
       cache: 'no-store',
     });
     
