@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +20,7 @@ interface Room {
 export function KosReadyList() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
 
   const skeletonData = useMemo(() => 
     Array.from({ length: 6 }, (_, i) => ({
@@ -39,6 +40,10 @@ export function KosReadyList() {
   , []);
 
   useEffect(() => {
+    // Prevent double fetch in React StrictMode
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     async function fetchRooms() {
       try {
         const response = await fetch('/api/rooms?limit=10');

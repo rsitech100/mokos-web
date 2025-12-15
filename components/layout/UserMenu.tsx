@@ -44,7 +44,7 @@ export function UserMenu({ user }: UserMenuProps) {
             className="fixed inset-0 z-10"
             onClick={() => setShowDropdown(false)}
           />
-          <div className="absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-20 animate-fade-in">
+          <div className="absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-2xl  overflow-hidden z-20 animate-fade-in">
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-4">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white font-bold text-lg ring-2 ring-white/30">
@@ -61,18 +61,6 @@ export function UserMenu({ user }: UserMenuProps) {
 
             <div className="py-2">
               <Link
-                href="/dashboard"
-                className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors group"
-                onClick={() => setShowDropdown(false)}
-              >
-                <div className="w-8 h-8 rounded-lg bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                </div>
-                <span className="font-medium">Dashboard</span>
-              </Link>
-              <Link
                 href="/profile/edit"
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors group"
                 onClick={() => setShowDropdown(false)}
@@ -83,6 +71,18 @@ export function UserMenu({ user }: UserMenuProps) {
                   </svg>
                 </div>
                 <span className="font-medium">Edit Profil</span>
+              </Link>
+              <Link
+                href="/riwayat"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors group"
+                onClick={() => setShowDropdown(false)}
+              >
+                <div className="w-8 h-8 rounded-lg bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center transition-colors">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="font-medium">Riwayat</span>
               </Link>
               <div className="my-1 border-t border-gray-100"></div>
               <button

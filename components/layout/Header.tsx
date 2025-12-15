@@ -9,10 +9,10 @@ export async function Header() {
   const user = await getUserData();
 
   const navItems = [
-    { label: 'Area Kos Populer', href: '#popular' },
+    { label: 'Area Kos Populer', href: '/kota' },
     { label: 'Rekomendasi Kos', href: '#recommendations' },
-    { label: 'Pusat Bantuan', href: '#help' },
-    { label: 'Syarat dan Ketentuan', href: '#terms' },
+    { label: 'Pusat Bantuan', href: '/bantuan' },
+    { label: 'Syarat dan Ketentuan', href: '/syarat-ketentuan' },
   ];
 
   return (

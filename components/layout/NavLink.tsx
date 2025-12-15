@@ -24,7 +24,7 @@ export function NavLink({ href, label }: NavLinkProps) {
 
   return (
     <Link
-      href={isHomePage ? href : `/${href}`}
+      href={href}
       onClick={handleNavClick}
       className="text-sm font-normal text-gray-700 hover:text-primary transition-colors"
     >
