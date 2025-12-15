@@ -1,7 +1,6 @@
 import React from 'react';
 import { Booking, Transaction } from '@/types/booking.types';
 import { getAuthToken } from '@/lib/auth/session';
-import { getLocalApiUrl } from '@/lib/utils/api';
 import { RiwayatTabs } from '../../tabs/RiwayatTabs';
 import { Container } from '@/components/layout/Container';
 
@@ -10,7 +9,7 @@ async function fetchBookings(status?: string): Promise<Booking[]> {
     const token = await getAuthToken();
     if (!token) return [];
 
-    const url = getLocalApiUrl('/api/bookings', status ? { status } : undefined);
+    const url = status ? `/api/bookings?status=${status}` : '/api/bookings';
     
     const response = await fetch(url, {
       headers: {
@@ -35,7 +34,7 @@ async function fetchTransactions(paymentStatus?: string): Promise<Transaction[]>
     const token = await getAuthToken();
     if (!token) return [];
 
-    const url = getLocalApiUrl('/api/transactions', paymentStatus ? { paymentStatus } : undefined);
+    const url = paymentStatus ? `/api/transactions?paymentStatus=${paymentStatus}` : '/api/transactions';
     
     const response = await fetch(url, {
       headers: {

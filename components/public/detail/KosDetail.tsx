@@ -5,7 +5,6 @@ import { Container } from '@/components';
 import { KosDetailGallery } from '@/components/public/detail/KosDetailGallery';
 import { KosDetailInfo } from '@/components/public/detail/KosDetailInfo';
 import { RecommendationsList } from '@/components/lists/RecommendationsList';
-import { getLocalApiUrl } from '@/lib/utils/api';
 
 interface Price {
   id: string;
@@ -49,8 +48,7 @@ interface KosDetailProps {
 
 async function fetchRoom(slug: string): Promise<RoomDetail | null> {
   try {
-    const url = getLocalApiUrl(`/api/rooms/${slug}`);
-    const response = await fetch(url, {
+    const response = await fetch(`/api/rooms/${slug}`, {
       cache: 'no-store',
     });
     
