@@ -3,7 +3,6 @@ import { Transaction } from '@/types/booking.types';
 import { TransactionCard } from '@/components/cards/TransactionCard';
 import { Container } from '@/components/layout/Container';
 import { getAuthToken } from '@/lib/auth/session';
-import { getLocalApiUrl } from '@/lib/utils/api';
 import { TransactionsFilters } from './TransactionsFilters';
 
 async function fetchTransactions(paymentStatus?: string): Promise<Transaction[]> {
@@ -13,7 +12,7 @@ async function fetchTransactions(paymentStatus?: string): Promise<Transaction[]>
       return [];
     }
 
-    const url = getLocalApiUrl('/api/transactions', paymentStatus ? { paymentStatus } : undefined);
+    const url = paymentStatus ? `/api/transactions?paymentStatus=${paymentStatus}` : '/api/transactions';
     
     const response = await fetch(url, {
       headers: {

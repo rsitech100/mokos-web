@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+function decryptData(encrypted: string): string {
+  return Buffer.from(encrypted, 'base64').toString('utf-8');
+}
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ bookingId: string }> }
 ) {
   try {
-    const authHeader = request.headers.get('Authorization');
-    const token = authHeader?.replace('Bearer ', '');
+    const cookieStore = await cookies();
+    const encryptedToken = cookieStore.get('auth_token')?.value;
     
-    if (!token) {
+    if (!encryptedToken) {
       return NextResponse.json(
         { success: false, message: 'Unauthorized' },
         { status: 401 }
       );
     }
 
+    const token = decryptData(encryptedToken);
     const { bookingId } = await params;
     const url = `${API_BASE_URL}/api/user/bookings/${bookingId}/cancel`;
 

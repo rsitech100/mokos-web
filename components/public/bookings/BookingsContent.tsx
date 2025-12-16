@@ -3,7 +3,6 @@ import { Booking } from '@/types/booking.types';
 import { BookingCard } from '@/components/cards/BookingCard';
 import { Container } from '@/components/layout/Container';
 import { getAuthToken } from '@/lib/auth/session';
-import { getLocalApiUrl } from '@/lib/utils/api';
 import { BookingsFilters } from './BookingsFilters';
 
 async function fetchBookings(status?: string): Promise<Booking[]> {
@@ -13,7 +12,7 @@ async function fetchBookings(status?: string): Promise<Booking[]> {
       return [];
     }
 
-    const url = getLocalApiUrl('/api/bookings', status ? { status } : undefined);
+    const url = status ? `/api/bookings?status=${status}` : '/api/bookings';
     
     const response = await fetch(url, {
       headers: {

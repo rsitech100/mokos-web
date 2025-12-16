@@ -1,8 +1,7 @@
 function getBaseUrl(): string {
   if (typeof window !== 'undefined') {
-    return '';
+    return window.location.origin;
   }
-
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
@@ -17,8 +16,7 @@ function getBaseUrl(): string {
 export function getLocalApiUrl(path: string, params?: Record<string, string>): string {
   const baseUrl = getBaseUrl();
   
-  const base = baseUrl;
-  const url = new URL(path, base);
+  const url = new URL(path, baseUrl);
   
   if (params) {
     Object.entries(params).forEach(([key, value]) => {

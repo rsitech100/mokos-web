@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Booking } from '@/types/booking.types';
 import Image from 'next/image';
+import { useToast } from '@/components/ui/Toast';
 
 interface BookingCardProps {
   booking: Booking;
@@ -12,6 +13,7 @@ interface BookingCardProps {
 export function BookingCard({ booking, onCancelSuccess }: BookingCardProps) {
   const [isCancelling, setIsCancelling] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { showToast } = useToast();
 
   const handleCancelBooking = async () => {
     if (!showConfirm) {
@@ -23,22 +25,30 @@ export function BookingCard({ booking, onCancelSuccess }: BookingCardProps) {
     try {
       const response = await fetch(`/api/bookings/${booking.id}/cancel`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
-        alert('Booking berhasil dibatalkan');
+        showToast('Booking berhasil dibatalkan', 'success');
         if (onCancelSuccess) {
           onCancelSuccess();
         } else {
-          window.location.reload();
+          setTimeout(() => window.location.reload(), 1000);
         }
       } else {
         const data = await response.json();
-        alert(data.message || 'Gagal membatalkan booking');
+        if (response.status === 401) {
+          showToast('Sesi Anda telah berakhir. Silakan login kembali.', 'error');
+          setTimeout(() => window.location.href = '/login', 1500);
+        } else {
+          showToast(data.message || 'Gagal membatalkan booking', 'error');
+        }
       }
     } catch (error) {
       console.error('Error cancelling booking:', error);
-      alert('Terjadi kesalahan saat membatalkan booking');
+      showToast('Terjadi kesalahan saat membatalkan booking', 'error');
     } finally {
       setIsCancelling(false);
       setShowConfirm(false);

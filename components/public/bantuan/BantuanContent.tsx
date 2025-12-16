@@ -21,7 +21,7 @@ const helpCategories = [
       },
       {
         q: 'Apakah saya bisa booking kos secara online?',
-        a: 'Ya! Anda dapat melakukan booking kos langsung melalui platform MOKOS. Setelah memilih kamar, klik tombol "Lihat Tipe Kamar", pilih durasi sewa, dan lakukan pembayaran. Konfirmasi booking akan dikirim ke email Anda.',
+        a: 'Ya! Anda dapat melakukan booking kos langsung melalui platform MOKOS. Setelah memilih kamar, klik tombol "Ajukan Sewa", pilih durasi sewa, dan lakukan pembayaran. Konfirmasi booking akan dikirim ke email Anda.',
       },
       {
         q: 'Bagaimana cara membatalkan booking?',

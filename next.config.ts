@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'www.99.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'mokos-web.vercel.app',
+      },
     ],
   },
 };

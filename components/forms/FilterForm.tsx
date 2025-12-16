@@ -35,6 +35,11 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
     'Laundry',
     'Parkir Motor',
     'Parkir Mobil',
+    'Dekat MRT',
+    'Dekat KRL',
+    'Pet Friendly',
+    'Bangunan Baru',
+    'Ramah Disabilitas',
   ];
 
   const handleFilterChange = (key: string, value: string) => {
@@ -81,6 +86,7 @@ export function FilterForm({ initialFilters, initialFacilities }: FilterFormProp
             { value: '', label: 'Semua' },
             { value: 'male', label: 'Putra' },
             { value: 'female', label: 'Putri' },
+            { value: 'campur', label: 'Campur' },
           ]}
           placeholder="Pilih jenis kelamin"
         />

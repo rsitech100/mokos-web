@@ -16,6 +16,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     firstName: user.userDetail?.firstName || '',
@@ -98,7 +99,27 @@ export function ProfileForm({ user }: ProfileFormProps) {
     setLoading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // If user requested password change, call API first
+      if (formData.currentPassword && formData.newPassword) {
+        const resp = await fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            oldPassword: formData.currentPassword,
+            newPassword: formData.newPassword,
+          }),
+        });
+
+        const result = await resp.json().catch(() => ({ success: false }));
+        if (!resp.ok || result.success === false) {
+          showToast(result.message || 'Gagal mengubah password', 'error');
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Simulate profile update success (replace with API when available)
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       showToast('Profil berhasil diperbarui!', 'success');
       
@@ -120,7 +141,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       setTimeout(() => {
         router.push('/');
         router.refresh();
-      }, 1000);
+      }, 800);
     } catch (error) {
       showToast('Terjadi kesalahan. Silakan coba lagi.', 'error');
     } finally {
@@ -129,19 +150,22 @@ export function ProfileForm({ user }: ProfileFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-              <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            Informasi Pribadi
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Informasi Pribadi</h2>
+              <p className="text-xs text-gray-500">Perbarui nama untuk profil yang lebih akurat</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <FormInput
               label="Nama Depan"
               type="text"
@@ -165,17 +189,20 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-              <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            Informasi Kontak
-          </h2>
-          
-          <div className="space-y-6">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Informasi Kontak</h2>
+              <p className="text-xs text-gray-500">Pastikan email & nomor aktif untuk notifikasi</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 md:space-y-6">
             <FormInput
               label="Email"
               type="email"
@@ -218,28 +245,39 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-              <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Ubah Password</h2>
+                <p className="text-xs text-gray-500">Opsional—aktifkan untuk mengganti password</p>
+              </div>
             </div>
-            Ubah Password
-            <span className="text-sm font-normal text-gray-500">(Opsional)</span>
-          </h2>
-          
-          <div className="space-y-6 bg-gray-50 p-6 rounded-xl">
-            <FormInput
-              label="Password Saat Ini"
-              type="password"
-              name="currentPassword"
-              value={formData.currentPassword}
-              onChange={handleChange}
-              error={fieldErrors.currentPassword}
-              disabled={loading}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button
+              type="button"
+              onClick={() => setShowPassword(v => !v)}
+              className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              {showPassword ? 'Sembunyikan' : 'Ganti Password'}
+            </button>
+          </div>
+
+          {showPassword && (
+            <div className="space-y-4 md:space-y-6">
+              <FormInput
+                label="Password Saat Ini"
+                type="password"
+                name="currentPassword"
+                value={formData.currentPassword}
+                onChange={handleChange}
+                error={fieldErrors.currentPassword}
+                disabled={loading}
+              />
               <FormInput
                 label="Password Baru"
                 type="password"
@@ -260,7 +298,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 disabled={loading}
               />
             </div>
-          </div>
+          )}
         </div>
 
         <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
